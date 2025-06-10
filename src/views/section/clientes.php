@@ -1,3 +1,9 @@
+<?php
+
+$base = '../../../../projeto_01/';
+
+?>
+
 <head>
 
   <!-- Inclua os estilos do DataTables -->
@@ -102,8 +108,9 @@
             echo "<td>{$row['rua']}</td>";
             echo "<td>{$row['numero']}</td>";
             echo "<td>" . ($row['ativo'] ? 'ativo' : 'inativo') . "</td>";
+            $clienteJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
             echo '<td><div>
-            <i class="bi bi-cash-coin" onclick="addNotinha(' . htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') . ')"></i> |
+            <i class="bi bi-cash-coin" onclick="addNotinha(' . "'" . $clienteJson . "'" . ')" class="bi bi-cloud-arrow-up-fill"></i> |
             <i onclick="UpCliente(' . $row['idcliente'] . ')" class="bi bi-cloud-arrow-up-fill"></i> |
             <i onclick="DeleteCliente(' . $row['idcliente'] . ')" class="bi bi-trash3-fill"></i>
           </div></td>';
@@ -116,11 +123,83 @@
       </tbody>
     </table>
 
+
+    <!-- Modal de Adicionar Notinha -->
+    <div class="modal fade" id="modalAddNotinha" tabindex="-1" aria-labelledby="modalAddNotinhaLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form id="formAddNotinha" method="POST" action="<?php echo $base ?>src/model/AddNotinha.php"> <!-- Ajuste conforme seu backend -->
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalAddNotinhaLabel">Adicionar Notinha</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" name="idcliente" id="notinha-idcliente">
+
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <label class="form-label">Nome:</label>
+                  <input type="text" class="form-control" id="notinha-nome" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Telefone:</label>
+                  <input type="text" class="form-control" id="notinha-telefone" disabled>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <label class="form-label">CPF:</label>
+                  <input type="text" class="form-control" id="notinha-cpf" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Endereço:</label>
+                  <input type="text" class="form-control" id="notinha-endereco" disabled>
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-md-6">
+                  <label for="data" class="form-label">Data</label>
+                  <input type="date" class="form-control" id="data" name="data" required>
+                </div>
+                <script>
+                  // Define a data atual no input
+                  const hoje = new Date().toISOString().split('T')[0];
+                  document.getElementById('data').value = hoje;
+                </script>
+                <div class="col-md-6">
+                  <label for="valor" class="form-label">Valor</label>
+                  <input type="number" step="0.01" class="form-control" name="valor" required>
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <label for="valor" class="form-label">Descrição</label>
+                <textarea style="height: 80px; max-height: 150px;" class="form-control" name="descricao" id="Descrição" cols="30" rows="10"></textarea>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <!-- Botão Cancelar alinhado à esquerda -->
+              <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Cancelar</button>
+
+              <!-- Botões alinhados à direita -->
+              <button type="submit" class="btn btn-success">Salvar Notinha e Imprimir</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
     <!-- Modal de Adicionar Cliente -->
     <div class="modal fade" id="modalAddCliente" tabindex="-1" aria-labelledby="modalAddClienteLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <form id="formAddCliente" method="POST" action="../../../../projeto_01/src/model/AddCliente.php"> <!-- Ajuste o action conforme seu backend -->
+          <form id="formAddCliente" method="POST" action="<?php echo $base ?>src/model/AddCliente.php"> <!-- Ajuste o action conforme seu backend -->
             <div class="modal-header">
               <h5 class="modal-title" id="modalAddClienteLabel">Adicionar Cliente</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -178,89 +257,41 @@
       </div>
     </div>
 
-    <!-- Modal de Adicionar Notinha -->
-    <div class="modal fade" id="modalAddNotinha" tabindex="-1" aria-labelledby="modalAddNotinhaLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <form id="formAddNotinha" method="POST" action="CAMINHO_PARA_ADICIONAR_NOTINHA.php"> <!-- Ajuste conforme seu backend -->
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalAddNotinhaLabel">Adicionar Notinha</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-              <input type="hidden" name="idcliente" id="notinha-idcliente">
-
-              <div class="mb-3">
-                <label class="form-label">Nome:</label>
-                <input type="text" class="form-control" id="notinha-nome" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Telefone:</label>
-                <input type="text" class="form-control" id="notinha-telefone" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">CPF:</label>
-                <input type="text" class="form-control" id="notinha-cpf" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Endereço:</label>
-                <input type="text" class="form-control" id="notinha-endereco" disabled>
-              </div>
-
-              <div class="mb-3">
-                <label for="data" class="form-label">Data</label>
-                <input type="date" class="form-control" name="data" required>
-              </div>
-              <div class="mb-3">
-                <label for="valor" class="form-label">Valor</label>
-                <input type="number" step="0.01" class="form-control" name="valor" required>
-              </div>
-              <div class="mb-3">
-                <label for="tipo_pagamento" class="form-label">Tipo de Pagamento</label>
-                <select class="form-control" name="tipo_pagamento" required>
-                  <option value="Dinheiro">Dinheiro</option>
-                  <option value="Cartão">Cartão</option>
-                  <option value="PIX">PIX</option>
-                  <option value="Outros">Outros</option>
-                </select>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="pago" id="pago">
-                <label class="form-check-label" for="pago">Pago</label>
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Salvar Notinha</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
 
 
   </section>
 
-  <!-- Scripts necessários -->
+  <!-- SCRIPTS JS -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-  <!-- Bootstrap Bundle JS (modais e tudo mais) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    function addNotinha(cliente) {
-      // Preencher os dados no modal
+    function addNotinha(clienteJson) {
+      console.log("JSON recebido:", clienteJson);
+
+      let cliente;
+      try {
+        cliente = JSON.parse(clienteJson);
+        console.log("Cliente parseado:", cliente);
+      } catch (e) {
+        console.error("Erro ao parsear JSON:", e);
+        return;
+      }
+
       document.getElementById('notinha-idcliente').value = cliente.idcliente;
       document.getElementById('notinha-nome').value = cliente.nome;
       document.getElementById('notinha-telefone').value = cliente.telefone;
       document.getElementById('notinha-cpf').value = cliente.cpf;
-      document.getElementById('notinha-endereco').value = cliente.rua + ', ' + cliente.numero + ', ' + cliente.bairro + ', ' + cliente.cidade + ' - ' + cliente.uf;
+      document.getElementById('notinha-endereco').value =
+        cliente.rua + ', ' + cliente.numero + ', ' + cliente.bairro + ', ' + cliente.cidade + ' - ' + cliente.uf;
 
-      // Abrir o modal
-      const modal = new bootstrap.Modal(document.getElementById('modalAddNotinha'));
+      const modalEl = document.getElementById('modalAddNotinha');
+      console.log("Elemento modal:", modalEl);
+
+      const modal = new bootstrap.Modal(modalEl);
       modal.show();
+      console.log("Modal deve ter sido mostrado.");
     }
   </script>
 
