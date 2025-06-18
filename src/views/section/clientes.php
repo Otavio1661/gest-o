@@ -134,6 +134,7 @@ $base = '../../../../projeto_01/';
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
+              <input type="hidden" name="idnotinha" id="notinha-id">
               <input type="hidden" name="idcliente" id="notinha-idcliente">
 
               <div class="row mb-2">
@@ -178,7 +179,26 @@ $base = '../../../../projeto_01/';
                 <label for="valor" class="form-label">Descrição</label>
                 <textarea style="height: 80px; max-height: 150px;" class="form-control" name="descricao" id="Descrição" cols="30" rows="10"></textarea>
               </div>
+
+              <div class="col-md-2">
+                <label class="form-check-label" for="ativo">Pago</label>
+                <div class="form-check form-switch mt-1">
+                  <input class="form-check-input" type="checkbox" id="pago" name="pago">
+                </div>
+              </div>
             </div>
+
+            <script>
+              const checkbox = document.getElementById('pago');
+
+              // Atualiza o valor dinamicamente
+              checkbox.addEventListener('change', function() {
+                checkbox.value = this.checked ? '1' : '0';
+              });
+
+              // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
+              checkbox.value = checkbox.checked ? '1' : '0';
+            </script>
 
             <div class="modal-footer">
               <!-- Botão Cancelar alinhado à esquerda -->
@@ -192,8 +212,6 @@ $base = '../../../../projeto_01/';
         </div>
       </div>
     </div>
-
-
 
     <!-- Modal de Adicionar Cliente -->
     <div class="modal fade" id="modalAddCliente" tabindex="-1" aria-labelledby="modalAddClienteLabel" aria-hidden="true">
@@ -279,6 +297,21 @@ $base = '../../../../projeto_01/';
         return;
       }
 
+      // Limpa os campos do formulário antes de preencher
+      document.getElementById('formAddNotinha').reset();
+      document.getElementById('notinha-idcliente').value = '';
+      document.getElementById('notinha-nome').value = '';
+      document.getElementById('notinha-telefone').value = '';
+      document.getElementById('notinha-cpf').value = '';
+      document.getElementById('notinha-endereco').value = '';
+      document.getElementById('Descrição').value = '';
+
+      // Define a data atual novamente
+      const hoje = new Date().toISOString().split('T')[0];
+      document.getElementById('data').value = hoje;
+
+      // Preenche os campos com os dados do cliente
+      document.getElementById('modalAddNotinhaLabel').innerHTML = 'Nova notinha';
       document.getElementById('notinha-idcliente').value = cliente.idcliente;
       document.getElementById('notinha-nome').value = cliente.nome;
       document.getElementById('notinha-telefone').value = cliente.telefone;
@@ -287,11 +320,8 @@ $base = '../../../../projeto_01/';
         cliente.rua + ', ' + cliente.numero + ', ' + cliente.bairro + ', ' + cliente.cidade + ' - ' + cliente.uf;
 
       const modalEl = document.getElementById('modalAddNotinha');
-      console.log("Elemento modal:", modalEl);
-
       const modal = new bootstrap.Modal(modalEl);
       modal.show();
-      console.log("Modal deve ter sido mostrado.");
     }
   </script>
 
@@ -306,6 +336,10 @@ $base = '../../../../projeto_01/';
         const idcliente = colunas[0].innerText;
 
         if (parseInt(idcliente) === id) {
+          // Define o título para "Editar Cliente"
+          document.getElementById('modalAddClienteLabel').innerText = 'Editar Cliente';
+
+          // Preenche os campos
           document.getElementById("idcliente").value = idcliente;
           document.getElementById("nome").value = colunas[1].innerText;
           document.getElementById("telefone").value = colunas[2].innerText;
@@ -315,12 +349,14 @@ $base = '../../../../projeto_01/';
           document.getElementById("bairro").value = colunas[6].innerText;
           document.getElementById("rua").value = colunas[7].innerText;
           document.getElementById("numero").value = colunas[8].innerText;
-          document.getElementById("ativo").value = colunas[9].innerText;
 
-          // Abre o modal
+          // Ativo: ativa o checkbox com base no texto
+          const ativo = colunas[9].innerText.trim().toLowerCase() === 'ativo';
+          document.getElementById("ativo").checked = ativo;
+
+          // Exibe o modal
           const modal = new bootstrap.Modal(document.getElementById('modalAddCliente'));
           modal.show();
-
           break;
         }
       }
@@ -329,6 +365,13 @@ $base = '../../../../projeto_01/';
 
   <script>
     function addCliente() {
+      // Limpa os campos do formulário
+      document.getElementById('formAddCliente').reset();
+      document.getElementById('idcliente').value = '';
+
+      // Define o título para "Adicionar Cliente"
+      document.getElementById('modalAddClienteLabel').innerText = 'Adicionar Cliente';
+
       const modal = new bootstrap.Modal(document.getElementById('modalAddCliente'));
       modal.show();
     }
