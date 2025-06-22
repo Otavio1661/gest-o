@@ -206,7 +206,7 @@ $base = '../../../../projeto_01/';
 
               <!-- Botões alinhados à direita -->
               <button type="submit" class="btn btn-success">Salvar Notinha e Imprimir</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
             </div>
           </form>
         </div>

@@ -6,6 +6,21 @@
 
 <section id="relatorios" class="bg-white">
     <h2>Relatórios</h2>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <label for="dataInicio" class="form-label">Data Início</label>
+            <input type="date" id="dataInicio" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label for="dataFim" class="form-label">Data Fim</label>
+            <input type="date" id="dataFim" class="form-control">
+        </div>
+        <div class="col-md-5 align-self-end">
+            <button id="filtrarDatas" class="btn btn-primary mt-2">Filtrar por data</button>
+            <button id="limparDatas" class="btn btn-secondary mt-2 ms-2">Limpar Filtro</button>
+            <button id="filtrarPago" class="btn btn-success mt-2 ms-2">Filtrar por Pago</button>
+        </div>
+    </div>
     <!-- Tabela oculta apenas para DataTables controlar os dados -->
     <table id="notinhas-tabela" class="table d-none">
         <thead>
@@ -25,15 +40,18 @@
         <tbody>
             <?php
             $sql = "SELECT 
-                    n.*, 
-                    c.nome AS nome_cliente, 
-                    c.cpf, 
-                    c.telefone, 
-                CONCAT(c.rua, ', ', c.numero, ' - ', c.bairro, ', ', c.cidade, ' - ', c.uf) AS endereco
-                FROM 
-                    notinhas n
-                LEFT JOIN 
-                    clientes c ON n.idcliente = c.idcliente;";
+                        n.*, 
+                        c.nome AS nome_cliente, 
+                        c.cpf, 
+                        c.telefone, 
+                        CONCAT(c.rua, ', ', c.numero, ' - ', c.bairro, ', ', c.cidade, ' - ', c.uf) AS endereco
+                    FROM 
+                        notinhas n
+                    LEFT JOIN 
+                        clientes c ON n.idcliente = c.idcliente
+                    ORDER BY 
+                        n.pago ASC,
+                        n.data DESC";
             $result = mysqli_query($connect, $sql);
 
             if ($result && mysqli_num_rows($result) > 0) {
@@ -89,66 +107,107 @@
         }
     </script>
 
-    <script>
-        $(document).ready(function() {
-            const table = $('#notinhas-tabela').DataTable({
-                pageLength: 9,
-                lengthMenu: [9, 30, 100],
-                language: {
-                    search: "Buscar:",
-                    lengthMenu: "Mostrar _MENU_ registros por página",
-                    zeroRecords: "Nenhum resultado encontrado",
-                    info: "Mostrando página _PAGE_ de _PAGES_",
-                    infoEmpty: "Nenhum registro disponível",
-                    infoFiltered: "(filtrado de _MAX_ registros no total)",
-                    paginate: {
-                        first: "Primeira",
-                        last: "Última",
-                        next: "Próxima",
-                        previous: "Anterior"
-                    }
-                },
-                drawCallback: function() {
-                    const table = this.api();
-                    const data = table.rows({
-                        page: 'current'
-                    }).data();
-                    const container = $('#notinhas-cards');
-                    container.empty();
+<script>
+    $(document).ready(function () {
+        const table = $('#notinhas-tabela').DataTable({
+            ordering: false,
+            pageLength: 9,
+            lengthMenu: [9, 30, 100],
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros por página",
+                zeroRecords: "Nenhum resultado encontrado",
+                info: "Mostrando página _PAGE_ de _PAGES_",
+                infoEmpty: "Nenhum registro disponível",
+                infoFiltered: "(filtrado de _MAX_ registros no total)",
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Próxima",
+                    previous: "Anterior"
+                }
+            },
+            drawCallback: function () {
+                const table = this.api();
+                const data = table.rows({ page: 'current' }).data();
+                const container = $('#notinhas-cards');
+                container.empty();
 
-                    data.each(function(row) {
-                        const pagoBadge = row[4] === 'pago' ?
-                            '<span class="badge bg-success">Pago</span>' :
-                            '<span class="badge bg-warning text-dark">Pendente</span>';
+                data.each(function (row) {
+                    const pagoBadge = row[4] === 'pago'
+                        ? '<span class="badge bg-success">Pago</span>'
+                        : '<span class="badge bg-warning text-dark">Pendente</span>';
 
-                        const card = `
-                            <div class="col-md-6 col-lg-4 mb-3">
-                                <div class="card h-auto shadow-sm">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${row[1]}</h5>
-                                        <p class="card-text">
-                                            <strong>Data:</strong> ${row[2]}<br>
-                                            <strong>Valor:</strong> ${row[3]}<br>
-                                            <strong>Status:</strong> ${pagoBadge}<br>
-                                            <strong>Descrição:</strong>
-                                            <div class="overflow-auto card shadow-sm p-1" style="max-height: 200px; min-height: 100px;">
-                                                ${row[5]}
-                                            </div>
-                                            <br>
-                                            <strong>CPF:</strong> ${row[6]}<br>
-                                            <strong>Telefone:</strong> ${row[7]}<br>
-                                            <strong>Endereço:</strong> ${row[8]}
-                                        </p>
-                                        <div class="text-end">
-                                            ${row[9]}
+                    const card = `
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-auto shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">${row[1]}</h5>
+                                    <p class="card-text">
+                                        <strong>Data:</strong> ${row[2]}<br>
+                                        <strong>Valor:</strong> ${row[3]}<br>
+                                        <strong>Status:</strong> ${pagoBadge}<br>
+                                        <strong>Descrição:</strong>
+                                        <div class="overflow-auto card shadow-sm p-1" style="max-height: 200px; min-height: 100px;">
+                                            ${row[5]}
                                         </div>
+                                        <br>
+                                        <strong>CPF:</strong> ${row[6]}<br>
+                                        <strong>Telefone:</strong> ${row[7]}<br>
+                                        <strong>Endereço:</strong> ${row[8]}
+                                    </p>
+                                    <div class="text-end">
+                                        ${row[9]}
                                     </div>
                                 </div>
-                            </div>`;
-                        container.append(card);
-                    });
-                }
-            });
+                            </div>
+                        </div>`;
+                    container.append(card);
+                });
+            }
         });
-    </script>
+
+        // Filtros definidos fora para poderem ser removidos depois
+        let filtroData = function (settings, data) {
+            const dataStr = data[2];
+            const dataObj = new Date(dataStr);
+            const inicio = $('#dataInicio').val();
+            const fim = $('#dataFim').val();
+
+            const inicioObj = inicio ? new Date(inicio) : null;
+            const fimObj = fim ? new Date(fim) : null;
+
+            return (!inicioObj || dataObj >= inicioObj) &&
+                   (!fimObj || dataObj <= fimObj);
+        };
+
+        let filtroPago = function (settings, data) {
+            return data[4] === 'pago';
+        };
+
+        // Botão: Filtrar por data
+        $('#filtrarDatas').on('click', function () {
+            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== filtroData);
+            $.fn.dataTable.ext.search.push(filtroData);
+            table.draw();
+        });
+
+        // Botão: Filtrar por pago
+        $('#filtrarPago').on('click', function () {
+            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== filtroPago);
+            $.fn.dataTable.ext.search.push(filtroPago);
+            table.draw();
+        });
+
+        // Botão: Limpar filtros
+        $('#limparDatas').on('click', function () {
+            $('#dataInicio').val('');
+            $('#dataFim').val('');
+            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search
+                .filter(fn => fn !== filtroData && fn !== filtroPago);
+            table.draw();
+        });
+    });
+</script>
+
 </section>
