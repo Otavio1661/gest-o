@@ -170,44 +170,86 @@ $base = '../../../../projeto_01/';
                   document.getElementById('data').value = hoje;
                 </script>
                 <div class="col-md-6">
-                  <label for="valor" class="form-label">Valor</label>
-                  <input type="number" step="0.01" class="form-control" name="valor" required>
+                  <!-- Campo Valor Total -->
+                  <label for="valor-total" class="form-label">Valor</label>
+                  <input type="number" step="0.01" class="form-control" name="valor" id="valor-total" required>
+
+                  <!-- Bloco condicional -->
+                  <div id="parcelado-campos" style="display: block; margin-top: 10px;">
+                    <label for="valor-debitado" class="form-label">Valor Debitado</label>
+                    <input type="number" step="0.01" class="form-control" name="valor-debitado" id="valor-debitado">
+
+                    <label for="valor-restante" class="form-label">Valor Restante</label>
+                    <input type="number" step="0.01" class="form-control" name="valor-restante" id="valor-restante" readonly>
+                  </div>
+                </div>
+
+                <script>
+                  function calcularValorRestante() {
+                    const valorTotal = parseFloat(document.getElementById("valor-total").value) || 0;
+                    const valorDebitado = parseFloat(document.getElementById("valor-debitado").value) || 0;
+                    let valorRestante = valorTotal - valorDebitado;
+
+                    if (valorRestante < 0) valorRestante = 0;
+
+                    document.getElementById("valor-restante").value = valorRestante.toFixed(2);
+                  }
+
+                  // Atualiza automaticamente ao digitar
+                  document.getElementById("valor-total").addEventListener("input", calcularValorRestante);
+                  document.getElementById("valor-debitado").addEventListener("input", calcularValorRestante);
+                </script>
+
+                <div class="mb-2">
+                  <label for="valor" class="form-label">Descrição</label>
+                  <textarea style="height: 80px; max-height: 150px;" class="form-control" name="descricao" id="Descrição" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-check-label" for="pagamentoP">Pagamento Parcelado</label>
+                  <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" id="pagamentoP" name="pagamentoP">
+                  </div>
+
+                  <label class="form-check-label" for="pago">Pago</label>
+                  <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" id="pago" name="pago">
+                  </div>
                 </div>
               </div>
 
-              <div class="mb-2">
-                <label for="valor" class="form-label">Descrição</label>
-                <textarea style="height: 80px; max-height: 150px;" class="form-control" name="descricao" id="Descrição" cols="30" rows="10"></textarea>
+              <script>
+                // Função para mostrar ou esconder os campos de pagamento parcelado
+                document.getElementById("pagamentoP").addEventListener("change", function() {
+                  const camposParcelado = document.getElementById("parcelado-campos");
+                  if (this.checked) {
+                    camposParcelado.style.display = "block";
+                  } else {
+                    camposParcelado.style.display = "none";
+                  }
+                });
+              </script>
+
+              <script>
+                const checkbox = document.getElementById('pago');
+
+                // Atualiza o valor dinamicamente
+                checkbox.addEventListener('change', function() {
+                  checkbox.value = this.checked ? '1' : '0';
+                });
+
+                // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
+                checkbox.value = checkbox.checked ? '1' : '0';
+              </script>
+
+              <div class="modal-footer">
+                <!-- Botão Cancelar alinhado à esquerda -->
+                <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Cancelar</button>
+
+                <!-- Botões alinhados à direita -->
+                <button type="submit" class="btn btn-success">Salvar Notinha e Imprimir</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
               </div>
-
-              <div class="col-md-2">
-                <label class="form-check-label" for="ativo">Pago</label>
-                <div class="form-check form-switch mt-1">
-                  <input class="form-check-input" type="checkbox" id="pago" name="pago">
-                </div>
-              </div>
-            </div>
-
-            <script>
-              const checkbox = document.getElementById('pago');
-
-              // Atualiza o valor dinamicamente
-              checkbox.addEventListener('change', function() {
-                checkbox.value = this.checked ? '1' : '0';
-              });
-
-              // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
-              checkbox.value = checkbox.checked ? '1' : '0';
-            </script>
-
-            <div class="modal-footer">
-              <!-- Botão Cancelar alinhado à esquerda -->
-              <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Cancelar</button>
-
-              <!-- Botões alinhados à direita -->
-              <button type="submit" class="btn btn-success">Salvar Notinha e Imprimir</button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
-            </div>
           </form>
         </div>
       </div>
@@ -297,7 +339,6 @@ $base = '../../../../projeto_01/';
         return;
       }
 
-      // Limpa os campos do formulário antes de preencher
       document.getElementById('formAddNotinha').reset();
       document.getElementById('notinha-idcliente').value = '';
       document.getElementById('notinha-nome').value = '';
@@ -306,11 +347,9 @@ $base = '../../../../projeto_01/';
       document.getElementById('notinha-endereco').value = '';
       document.getElementById('Descrição').value = '';
 
-      // Define a data atual novamente
       const hoje = new Date().toISOString().split('T')[0];
       document.getElementById('data').value = hoje;
 
-      // Preenche os campos com os dados do cliente
       document.getElementById('modalAddNotinhaLabel').innerHTML = 'Nova notinha';
       document.getElementById('notinha-idcliente').value = cliente.idcliente;
       document.getElementById('notinha-nome').value = cliente.nome;
