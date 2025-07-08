@@ -10,6 +10,13 @@ $valorRestante = $_POST['valor-restante'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
 $pago = isset($_POST['pago']) ? 1 : 0;
 
+if ($_POST['pago'] == 0 && $valorRestante !== null) {
+    $valorRestante = $valor;
+    print_r($valorRestante);
+}
+
+ print_r(['$idnotinha' => $idnotinha, '$idcliente' => $idcliente, '$data' => $data, '$valor' => $valor, '$valorRestante' => $valorRestante, '$descricao' => $descricao, '$pago' => $pago]); die;
+
 // Validação básica
 if (empty($idcliente) || empty($data) || empty($valor)) {
     $msgErro = urlencode("Campos obrigatórios não foram preenchidos.");
@@ -17,18 +24,32 @@ if (empty($idcliente) || empty($data) || empty($valor)) {
     exit;
 }
 
-// Função para registrar log de alterações
 function logAlteracao($connect, $idnotinha, $campo, $antigo, $novo) {
+    // Força 0 se campo for "pago" e novo valor estiver vazio
+    if ($campo === 'pago') {
+        // $antigo = (int) $antigo;
+        $antigo = $_POST['valor'] ?? $antigo;
+        $novo = ($novo === '' || $novo === null) ? 0 : (int) $novo;
+    }
+
+    // Se for o campo "valor" e pago == 1, usa o valor de $_POST['valor'] como valor antigo
+    if ($campo === 'valor' && isset($_POST['pago']) && $_POST['pago'] == 1) {
+        $antigo = $_POST['valor'] ?? $antigo;
+    }
+
+    // Só registra se houve alteração
     if ($antigo != $novo) {
         $campo = mysqli_real_escape_string($connect, $campo);
         $antigo = mysqli_real_escape_string($connect, $antigo);
         $novo = mysqli_real_escape_string($connect, $novo);
+
         $sqlLog = "INSERT INTO log_alteracoes_notinhas 
                    (idnotinha, campo_alterado, valor_antigo, valor_novo, data_alteracao) 
                    VALUES ($idnotinha, '$campo', '$antigo', '$novo', NOW())";
         mysqli_query($connect, $sqlLog);
     }
 }
+
 
 if (empty($idnotinha)) {
     // INSERÇÃO

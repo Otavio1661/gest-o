@@ -31,7 +31,7 @@
                     <tr>
                         <td><?= $row['idnotinha'] ?></td>
                         <td><?= htmlspecialchars($row['nome_cliente']) ?></td>
-                        <td><?= htmlspecialchars($row['campo_alterado']) ?></td>
+                        <td><?= htmlspecialchars($row['campo_alterado'])?></td>
                         <td><?= htmlspecialchars($row['valor_antigo']) ?></td>
                         <td><?= htmlspecialchars(floatval($row['valor_antigo']) - floatval($row['valor_novo'])) ?></td>
                         <td><?= empty($row['valor_novo']) ? 'Pago' : htmlspecialchars($row['valor_novo']) ?></td>

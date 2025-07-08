@@ -124,144 +124,14 @@ $base = '../../../../projeto_01/';
     </table>
 
 
-    <!-- Modal de Adicionar Notinha -->
-    <div class="modal fade" id="modalAddNotinha" tabindex="-1" aria-labelledby="modalAddNotinhaLabel" aria-hidden="true">
+
+        <!-- Modal de Adicionar Cliente -->
+        <div class="modal fade" id="modalAddCliente" tabindex="-1" aria-labelledby="modalAddClienteLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <form id="formAddNotinha" method="POST" action="<?php echo $base ?>src/model/AddNotinha.php"> <!-- Ajuste conforme seu backend -->
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalAddNotinhaLabel">Adicionar Notinha</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-              <input type="hidden" name="idnotinha" id="notinha-id">
-              <input type="hidden" name="idcliente" id="notinha-idcliente">
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label">Nome:</label>
-                  <input type="text" class="form-control" id="notinha-nome" disabled>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Telefone:</label>
-                  <input type="text" class="form-control" id="notinha-telefone" disabled>
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label">CPF:</label>
-                  <input type="text" class="form-control" id="notinha-cpf" disabled>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Endereço:</label>
-                  <input type="text" class="form-control" id="notinha-endereco" disabled>
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label for="data" class="form-label">Data</label>
-                  <input type="date" class="form-control" id="data" name="data" required>
-                </div>
-                <script>
-                  // Define a data atual no input
-                  const hoje = new Date().toISOString().split('T')[0];
-                  document.getElementById('data').value = hoje;
-                </script>
-                <div class="col-md-6">
-                  <!-- Campo Valor Total -->
-                  <label for="valor-total" class="form-label">Valor</label>
-                  <input type="number" step="0.01" class="form-control" name="valor" id="valor-total" required>
-
-                  <!-- Bloco condicional -->
-                  <div id="parcelado-campos" style="display: block; margin-top: 10px;">
-                    <label for="valor-debitado" class="form-label">Valor Debitado</label>
-                    <input type="number" step="0.01" class="form-control" name="valor-debitado" id="valor-debitado">
-
-                    <label for="valor-restante" class="form-label">Valor Restante</label>
-                    <input type="number" step="0.01" class="form-control" name="valor-restante" id="valor-restante" readonly>
-                  </div>
-                </div>
-
-                <script>
-                  function calcularValorRestante() {
-                    const valorTotal = parseFloat(document.getElementById("valor-total").value) || 0;
-                    const valorDebitado = parseFloat(document.getElementById("valor-debitado").value) || 0;
-                    let valorRestante = valorTotal - valorDebitado;
-
-                    if (valorRestante < 0) valorRestante = 0;
-
-                    document.getElementById("valor-restante").value = valorRestante.toFixed(2);
-                  }
-
-                  // Atualiza automaticamente ao digitar
-                  document.getElementById("valor-total").addEventListener("input", calcularValorRestante);
-                  document.getElementById("valor-debitado").addEventListener("input", calcularValorRestante);
-                </script>
-
-                <div class="mb-2">
-                  <label for="valor" class="form-label">Descrição</label>
-                  <textarea style="height: 80px; max-height: 150px;" class="form-control" name="descricao" id="Descrição" cols="30" rows="10"></textarea>
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-check-label" for="pagamentoP">Pagamento Parcelado</label>
-                  <div class="form-check form-switch mt-1">
-                    <input class="form-check-input" type="checkbox" id="pagamentoP" name="pagamentoP">
-                  </div>
-
-                  <label class="form-check-label" for="pago">Pago</label>
-                  <div class="form-check form-switch mt-1">
-                    <input class="form-check-input" type="checkbox" id="pago" name="pago">
-                  </div>
-                </div>
-              </div>
-
-              <script>
-                // Função para mostrar ou esconder os campos de pagamento parcelado
-                document.getElementById("pagamentoP").addEventListener("change", function() {
-                  const camposParcelado = document.getElementById("parcelado-campos");
-                  if (this.checked) {
-                    camposParcelado.style.display = "block";
-                  } else {
-                    camposParcelado.style.display = "none";
-                  }
-                });
-              </script>
-
-              <script>
-                const checkbox = document.getElementById('pago');
-
-                // Atualiza o valor dinamicamente
-                checkbox.addEventListener('change', function() {
-                  checkbox.value = this.checked ? '1' : '0';
-                });
-
-                // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
-                checkbox.value = checkbox.checked ? '1' : '0';
-              </script>
-
-              <div class="modal-footer">
-                <!-- Botão Cancelar alinhado à esquerda -->
-                <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Cancelar</button>
-
-                <!-- Botões alinhados à direita -->
-                <button type="submit" class="btn btn-success">Salvar Notinha e Imprimir</button>
-                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Salvar Notinha</button>
-              </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal de Adicionar Cliente -->
-    <div class="modal fade" id="modalAddCliente" tabindex="-1" aria-labelledby="modalAddClienteLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content shadow">
           <form id="formAddCliente" method="POST" action="<?php echo $base ?>src/model/AddCliente.php"> <!-- Ajuste o action conforme seu backend -->
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalAddClienteLabel">Adicionar Cliente</h5>
+            <div class="modal-header bg-warning">
+              <h5 class="modal-title text-light" id="modalAddClienteLabel">Adicionar Cliente</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
@@ -317,14 +187,27 @@ $base = '../../../../projeto_01/';
       </div>
     </div>
 
-
-
   </section>
 
   <!-- SCRIPTS JS -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+    const checkbox = document.getElementById('pago');
+
+    // Atualiza o valor dinamicamente
+    checkbox.addEventListener('change', function() {
+      checkbox.value = this.checked ? '1' : '0';
+    });
+
+    // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
+    checkbox.value = checkbox.checked ? '1' : '0';
+  </script>
+
+
 
   <script>
     function addNotinha(clienteJson) {
@@ -346,11 +229,12 @@ $base = '../../../../projeto_01/';
       document.getElementById('notinha-cpf').value = '';
       document.getElementById('notinha-endereco').value = '';
       document.getElementById('Descrição').value = '';
+      document.querySelectorAll('.pg-parcelado').forEach(el => el.style.display = 'none');
 
       const hoje = new Date().toISOString().split('T')[0];
       document.getElementById('data').value = hoje;
 
-      document.getElementById('modalAddNotinhaLabel').innerHTML = 'Nova notinha';
+      document.getElementById('modalAddNotinhaLabel').innerHTML = 'Adicionar Notinha';
       document.getElementById('notinha-idcliente').value = cliente.idcliente;
       document.getElementById('notinha-nome').value = cliente.nome;
       document.getElementById('notinha-telefone').value = cliente.telefone;

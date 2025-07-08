@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22/06/2025 às 16:54
+-- Tempo de geração: 08/07/2025 às 16:27
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -74,6 +74,29 @@ INSERT INTO `clientes` (`idcliente`, `nome`, `telefone`, `cpf`, `uf`, `cidade`, 
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `log_alteracoes_notinhas`
+--
+
+CREATE TABLE `log_alteracoes_notinhas` (
+  `id` int(11) NOT NULL,
+  `idnotinha` int(11) NOT NULL,
+  `campo_alterado` varchar(100) NOT NULL,
+  `valor_antigo` text DEFAULT NULL,
+  `valor_novo` text DEFAULT NULL,
+  `data_alteracao` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `log_alteracoes_notinhas`
+--
+
+INSERT INTO `log_alteracoes_notinhas` (`id`, `idnotinha`, `campo_alterado`, `valor_antigo`, `valor_novo`, `data_alteracao`) VALUES
+(26, 16, 'valor', '224.00', '', '2025-07-08 10:18:31'),
+(27, 16, 'pago', '224.00', '1', '2025-07-08 10:18:31');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `notinhas`
 --
 
@@ -91,22 +114,23 @@ CREATE TABLE `notinhas` (
 --
 
 INSERT INTO `notinhas` (`idnotinha`, `idcliente`, `data`, `valor`, `pago`, `descricao`) VALUES
-(1, 1, '2025-06-10', 300.00, 1, 'Buquês de flores variadas (rosas, lírios, margaridas, etc.)\r\n\r\nArranjos florais para decoração (em vasos ou cestas)\r\n\r\nPlantas ornamentais em vasos (como suculentas, orquídeas, samambaias)\r\n\r\nVasos decorativos (de cerâmica, vidro, barro, etc.)\r\n\r\nAdubos e fertilizantes para flores\r\n\r\nFerramentas de jardinagem (tesouras de poda, pás pequenas, regadores)\r\n\r\nCartões para acompanhar os arranjos\r\n\r\nPresentes complementares (ursinhos de pelúcia, chocolates)\r\n\r\nLaços, fitas e papéis de embrulho\r\n\r\nServiço de entrega de flores'),
-(2, 6, '2025-06-10', 123.00, 0, 'sdfg'),
+(1, 1, '2025-06-10', 300.00, 0, 'Buquês de flores variadas (rosas, lírios, margaridas, etc.)\r\n\r\nArranjos florais para decoração (em vasos ou cestas)\r\n\r\nPlantas ornamentais em vasos (como suculentas, orquídeas, samambaias)\r\n\r\nVasos decorativos (de cerâmica, vidro, barro, etc.)\r\n\r\nAdubos e fertilizantes para flores\r\n\r\nFerramentas de jardinagem (tesouras de poda, pás pequenas, regadores)\r\n\r\nCartões para acompanhar os arranjos\r\n\r\nPresentes complementares (ursinhos de pelúcia, chocolates)\r\n\r\nLaços, fitas e papéis de embrulho\r\n\r\nServiço de entrega de flores'),
+(2, 6, '2025-06-10', 103.00, 0, 'sdfg'),
 (3, 6, '2025-06-10', 1234.00, 0, 'asdfghj'),
 (4, 10, '2025-06-10', 12345.00, 0, '12345yasdfh'),
 (5, 19, '2025-06-10', 123456.00, 0, 'xxxxxxx'),
-(6, 19, '2025-06-13', 12345.00, 1, 'sdfgh'),
-(7, 19, '2025-06-13', 2345.00, 0, 'wergh'),
-(8, 19, '2025-06-13', 2345.00, 0, 'werfgh'),
+(6, 19, '2025-06-13', 12345.00, 0, 'sdfgh'),
+(7, 19, '2025-06-13', 52.00, 0, 'wergh'),
+(8, 19, '2025-06-13', 52.00, 0, 'werfgh'),
 (9, 18, '2025-06-13', 2345.00, 0, 'efgtgf'),
 (10, 19, '2025-06-13', 2345.00, 0, 'efsgrtdbghn'),
-(11, 10, '2025-06-13', 12345.00, 0, 'sdfghbvcs'),
+(11, 10, '2025-06-13', 658.00, 0, 'sdfghbvcs'),
 (12, 1, '2025-06-10', 12.00, 0, 'testexxxxxxxxxx'),
 (13, 1, '2025-06-10', 12.00, 0, 'axxxxx'),
 (14, 8, '2025-06-20', 220.00, 1, 'abc de fg'),
-(15, 20, '2025-06-20', 300.00, 1, 'presentes'),
-(16, 20, '2025-06-20', 599.00, 0, 'sabonete');
+(15, 20, '2025-06-20', 0.00, 1, 'presentes'),
+(16, 20, '2025-06-20', 0.00, 1, 'sabonete'),
+(17, 18, '2025-07-07', 224.00, 0, 'xcvbnkytrd');
 
 -- --------------------------------------------------------
 
@@ -136,6 +160,12 @@ ALTER TABLE `caixa`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`idcliente`);
+
+--
+-- Índices de tabela `log_alteracoes_notinhas`
+--
+ALTER TABLE `log_alteracoes_notinhas`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `notinhas`
@@ -168,10 +198,16 @@ ALTER TABLE `clientes`
   MODIFY `idcliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
+-- AUTO_INCREMENT de tabela `log_alteracoes_notinhas`
+--
+ALTER TABLE `log_alteracoes_notinhas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
 -- AUTO_INCREMENT de tabela `notinhas`
 --
 ALTER TABLE `notinhas`
-  MODIFY `idnotinha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idnotinha` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de tabela `pagamentos`
