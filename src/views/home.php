@@ -31,6 +31,8 @@
     <!-- Menu lateral -->
     <?php include __DIR__ . '/partials/navLateral.php' ?>
 
+    <div class="content-area">
+    <?php include __DIR__ . '/partials/acoesRapidas.php'; ?>
     <!-- Conteúdo -->
     <?php include __DIR__ . '/section/clientes.php' ?>
     <?php include __DIR__ . '/section/relatorios.php' ?>

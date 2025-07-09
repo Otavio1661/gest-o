@@ -10,12 +10,17 @@ $valorRestante = $_POST['valor-restante'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
 $pago = isset($_POST['pago']) ? 1 : 0;
 
-if ($_POST['pago'] == 0 && $valorRestante !== null) {
+// Tratamento do valor restante
+if ($pago == 0 && $valorRestante == null) {
     $valorRestante = $valor;
-    print_r($valorRestante);
 }
 
- print_r(['$idnotinha' => $idnotinha, '$idcliente' => $idcliente, '$data' => $data, '$valor' => $valor, '$valorRestante' => $valorRestante, '$descricao' => $descricao, '$pago' => $pago]); die;
+// Se pago, força valorRestante para 0
+if ($pago == 1) {
+    $valorRestante = 0;
+}
+
+$valorAtualizado = $valorRestante; // valor que será salvo e usado no log
 
 // Validação básica
 if (empty($idcliente) || empty($data) || empty($valor)) {
@@ -25,16 +30,9 @@ if (empty($idcliente) || empty($data) || empty($valor)) {
 }
 
 function logAlteracao($connect, $idnotinha, $campo, $antigo, $novo) {
-    // Força 0 se campo for "pago" e novo valor estiver vazio
+    // Se for o campo "pago", força 0 se novo valor estiver vazio
     if ($campo === 'pago') {
-        // $antigo = (int) $antigo;
-        $antigo = $_POST['valor'] ?? $antigo;
         $novo = ($novo === '' || $novo === null) ? 0 : (int) $novo;
-    }
-
-    // Se for o campo "valor" e pago == 1, usa o valor de $_POST['valor'] como valor antigo
-    if ($campo === 'valor' && isset($_POST['pago']) && $_POST['pago'] == 1) {
-        $antigo = $_POST['valor'] ?? $antigo;
     }
 
     // Só registra se houve alteração
@@ -50,11 +48,10 @@ function logAlteracao($connect, $idnotinha, $campo, $antigo, $novo) {
     }
 }
 
-
 if (empty($idnotinha)) {
     // INSERÇÃO
     $stmt = $connect->prepare("INSERT INTO notinhas (idcliente, data, valor, pago, descricao) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("issis", $idcliente, $data, $valor, $pago, $descricao);
+    $stmt->bind_param("issis", $idcliente, $data, $valorAtualizado, $pago, $descricao);
 
     if ($stmt->execute()) {
         $msgSucesso = urlencode("Sucesso ao adicionar notinha! :)");
@@ -80,13 +77,13 @@ if (empty($idnotinha)) {
     // Log de alterações
     logAlteracao($connect, $idnotinha, 'idcliente', $oldData['idcliente'], $idcliente);
     logAlteracao($connect, $idnotinha, 'data', $oldData['data'], $data);
-    logAlteracao($connect, $idnotinha, 'valor', $oldData['valor'], $valorRestante); // <-- aqui compara valor antigo com valor restante novo
+    logAlteracao($connect, $idnotinha, 'valor', $oldData['valor'], $valorAtualizado);
     logAlteracao($connect, $idnotinha, 'pago', $oldData['pago'], $pago);
     logAlteracao($connect, $idnotinha, 'descricao', $oldData['descricao'], $descricao);
 
     // Atualiza no banco
     $stmt = $connect->prepare("UPDATE notinhas SET idcliente = ?, data = ?, valor = ?, pago = ?, descricao = ? WHERE idnotinha = ?");
-    $stmt->bind_param("issisi", $idcliente, $data, $valorRestante, $pago, $descricao, $idnotinha);
+    $stmt->bind_param("issisi", $idcliente, $data, $valorAtualizado, $pago, $descricao, $idnotinha);
 
     if ($stmt->execute()) {
         $msgSucesso = urlencode("Sucesso ao atualizar notinha! :)");
