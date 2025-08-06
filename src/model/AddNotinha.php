@@ -9,6 +9,7 @@ $valor = $_POST['valor'] ?? '';
 $valorRestante = $_POST['valor-restante'] ?? ''; 
 $descricao = $_POST['descricao'] ?? '';
 $pago = isset($_POST['pago']) ? 1 : 0;
+$tipo = isset($_POST['tipo']) ? $_POST['tipo'] : 0;
 
 // Tratamento do valor restante
 if ($pago == 0 && $valorRestante == null) {
@@ -84,6 +85,17 @@ if (empty($idnotinha)) {
     // Atualiza no banco
     $stmt = $connect->prepare("UPDATE notinhas SET idcliente = ?, data = ?, valor = ?, pago = ?, descricao = ? WHERE idnotinha = ?");
     $stmt->bind_param("issisi", $idcliente, $data, $valorAtualizado, $pago, $descricao, $idnotinha);
+
+
+    if ($tipo !== 0) {
+
+        if ($descricao !== 0) {
+
+        }
+        "INSERT INTO caixa (tipo, descricao, valor)
+        VALUES ('entrada', 'Recebimento de cliente', 150.00);";
+    }
+
 
     if ($stmt->execute()) {
         $msgSucesso = urlencode("Sucesso ao atualizar notinha! :)");

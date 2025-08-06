@@ -174,7 +174,7 @@ $base = '../../../../projeto_01/';
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 
 
-<script>
+<!-- <script>
   const checkbox = document.getElementById('pago');
 
   // Atualiza o valor dinamicamente
@@ -184,7 +184,7 @@ $base = '../../../../projeto_01/';
 
   // Garante valor correto ao carregar a página (caso o estado inicial do checkbox seja importante)
   checkbox.value = checkbox.checked ? '1' : '0';
-</script>
+</script> -->
 
 
 

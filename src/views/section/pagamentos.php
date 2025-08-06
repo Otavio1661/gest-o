@@ -1,19 +1,25 @@
 <?php
 include 'config.php';
 
-$sql = "SELECT l.*, c.nome AS nome_cliente
-        FROM log_alteracoes_notinhas l
-        LEFT JOIN notinhas n ON l.idnotinha = n.idnotinha
-        LEFT JOIN clientes c ON n.idcliente = c.idcliente
-        ORDER BY
-            l.idnotinha,
-            FIELD(l.campo_alterado, 'pago', 'valor'),
-            l.data_alteracao DESC";
+$sql = "SELECT 
+l.*, 
+c.nome AS nome_cliente
+FROM 
+log_alteracoes_notinhas l
+LEFT JOIN 
+notinhas n ON l.idnotinha = n.idnotinha
+LEFT JOIN 
+clientes c ON n.idcliente = c.idcliente
+WHERE 
+l.campo_alterado = 'valor'
+ORDER BY
+l.idnotinha,
+l.data_alteracao DESC;";
 
 $result = mysqli_query($connect, $sql);
 ?>
 <section id="pagamentos" class="bg-light">
-    <h2>Log de Alterações de Notinhas</h2>
+    <h2>Alterações de Notinhas</h2>
 
     <table id="logAlteracoes" class="table table-striped table-bordered">
         <thead>

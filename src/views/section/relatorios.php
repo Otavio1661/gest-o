@@ -125,13 +125,8 @@
                         <div class="row mb-2">
                             <div class="col-md-6">
                                 <label for="data" class="form-label">Data</label>
-                                <input type="date" class="form-control" id="data" name="data" required>
+                                <input type="date" class="form-control" id="dataNotinha" name="data" required>
                             </div>
-                            <script>
-                                // Define a data atual no input
-                                const hoje = new Date().toISOString().split('T')[0];
-                                document.getElementById('data').value = hoje;
-                            </script>
                             <div class="col-md-6">
                                 <!-- Campo Valor Total -->
                                 <label for="valor-total" class="form-label">Valor</label>
@@ -213,7 +208,13 @@
         function UpNotinha(notinhas) {
             const data = JSON.parse(notinhas);
 
+            // Define a data atual no input
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = hoje;
+
+
             console.log(data);
+            console.log(hoje);
 
             // Preenche os campos do modal
             document.getElementById('modalAddNotinhaLabel').innerHTML = 'Editar notinha';
@@ -223,11 +224,10 @@
             document.getElementById('notinha-telefone').value = data.telefone || '';
             document.getElementById('notinha-cpf').value = data.cpf || '';
             document.getElementById('notinha-endereco').value = data.endereco || '';
-            document.getElementById('data').value = data.data || new Date().toISOString().split('T')[0];
-            document.querySelector('[name="valor"]').value = data.valor || '';
+            document.getElementById('dataNotinha').value = data.data || hoje;
+            document.getElementById('valor-total').value = data.valor || '';
             document.getElementById('Descrição').value = data.descricao || '';
             document.querySelectorAll('.pg-parcelado').forEach(el => el.style.display = 'block');
-
 
             // Corrigido: marcar o checkbox se data.pago for igual a 1
             document.getElementById('pago').checked = data.pago == 1;
